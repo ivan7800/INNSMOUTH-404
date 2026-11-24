@@ -86,3 +86,7 @@ El arnés de controlador expone funciones solo en la copia del código cargada p
 Esta revisión da más causalidad a la trama y decisiones mejor informadas. No garantiza que el juego emocione ni una puntuación artística. Permanecen el patrón repetido de explorar/leer/mecanismo, las secuencias explícitas de varios puzles y la escasa amenaza física en III, V y VIII. Son descansos deliberados, pero su duración debe medirse con jugadores.
 
 Se requiere una partida humana por cada final y dificultad, cronometrar capítulos, comprobar que las pistas no resulten obvias ni opacas, valorar voces y textos, probar seguimiento de Thomas, audio, persistencia física, Safari/iPhone, Firefox, Windows/Linux, controles táctiles y mando real. WebGL sigue siendo experimental. El navegador remoto no puede abrir el servidor local (conexión rechazada); no se usa ese intento como validación visual de RC.8.
+
+## Comprobación del despliegue
+
+La comprobación inicial en Pages detectó un menú RC.8 con módulos RC.7.1 retenidos en caché. Se versionan las URLs de los 21 scripts y del CSS; el generador autónomo resuelve también estas URLs. Esta corrección evita reutilizar las URLs antiguas al publicar RC.8.

@@ -9,4 +9,5 @@
 - Historia, Normal y Pavor diferenciados por percepción, velocidad, avisos, aguante, calma y reintentos.
 - Guardado v8 compatible con progresos previos; autosave periódico aplazado durante investigación/persecución enemiga.
 - Pruebas del controlador, migración, decisiones prematuras y patrullas. Informe con spoilers y límites en `docs/NARRATIVA-Y-QA-RC8.md`.
+- URLs de scripts y estilos con versión para evitar mezclar el HTML nuevo con módulos antiguos en caché. El generador autónomo admite esas URLs.
 - Arte, mapas y motor conservados. Continúa siendo candidata RC pendiente de validación humana.
