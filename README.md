@@ -1,6 +1,6 @@
 # INNSMOUTH-404 — La herencia de las profundidades
 
-**v1.0.0-rc.8 · Pixel Art Gótico Costero** — candidata a publicación, no versión estable certificada.
+**v1.0.0-rc.9 · Pixel Art Gótico Costero** — candidata a publicación, no versión estable certificada.
 
 Survival horror narrativo en primera persona inspirado en los Mitos de Cthulhu, ambientado en Innsmouth en 1927. Proyecto independiente de ASHEN-VEIL-404.
 
@@ -34,7 +34,9 @@ git diff --exit-code -- JUGAR-SIN-INSTALAR.html
 
 La RC.8 incorpora revisión narrativa, deducciones con selección de pruebas, consecuencias más claras y tres perfiles de dificultad con diferencias de detección, movimiento y recuperación. El guardado v8 migra partidas anteriores sin borrar progreso. Las decisiones ya tomadas conservan su resultado.
 
-Consulta [la auditoría narrativa y jugable](docs/NARRATIVA-Y-QA-RC8.md) para la historia por capítulos, decisiones, tabla de dificultad y límites de las pruebas (**contiene spoilers**), y [CHANGELOG](CHANGELOG.md) para los cambios.
+La RC.9 añade una amenaza en la iglesia al fallar el resonador, efectos inmediatos de compartir u ocultar los registros y un clímax en la cámara final: reconocer la transmisión viva, recorrer tres nodos y ejecutar una acción distinta por desenlace. Escuchar exige entregar una memoria que aparece en el epílogo. Los guardados RC.8 se migran; los finales ya completados conservan su desenlace sin atribuirles retroactivamente una memoria sacrificada.
+
+Consulta [la auditoría narrativa y jugable de RC.8](docs/NARRATIVA-Y-QA-RC8.md) y [la revisión de RC.9](docs/CLIMAX-RC9.md) (**contienen spoilers**), y [CHANGELOG](CHANGELOG.md) para los cambios. La auditoría de RC.8 describe el estado anterior de III, V y VIII.
 
 Quality ejecuta comprobaciones del núcleo, objetos, rutas lógicas, IA y diez recorridos mediante el controlador real con un DOM mínimo. Estos últimos navegan por rutas e invocan interacciones y transiciones de la interfaz; no ejecutan gráficos, audio ni amenazas durante la campaña. El HTML autónomo se regenera desde las fuentes y se comprueba que no haya diferencias.
 

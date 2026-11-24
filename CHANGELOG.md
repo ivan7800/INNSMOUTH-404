@@ -1,5 +1,13 @@
 # Cambios
 
+## 1.0.0-rc.9 — 2026-11-24
+
+- Error en el resonador de la iglesia: alarma, pérdida limitada de estabilidad y amenaza con patrulla hasta calibrar correctamente.
+- Compartir u ocultar los registros tiene una consecuencia inmediata de salud o estabilidad, además de las rutas existentes.
+- Cámara final recorrible con contraste de voces y tres nodos; cada decisión final exige una acción distinta. Escuchar añade elección de memoria y consecuencia en el epílogo.
+- Migración de partidas RC.8 y anteriores, incluida una campaña ya completada, sin inventar elecciones retroactivas.
+- Pruebas de diez rutas mediante el controlador y caso de error recuperable en la iglesia. Queda pendiente una partida humana completa.
+
 ## 1.0.0-rc.8 — 2026-11-24
 
 - Revisión de causalidad, voces de personajes, fotografía del hotel y reglas de las copias.

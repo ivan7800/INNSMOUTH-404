@@ -162,7 +162,16 @@ for(const [id,line] of Object.entries({silas:'No todas las cosas que desaparecen
 const Secrets=typeof module!=='undefined'?require('./secrets'):root.InnSecrets;Secrets.install(maps);
 
 // RC8: the network records through resonators; disconnected imitations repeat a fixed record.
+threats.church={id:'church_echo',look:'stalker',name:'La voz del campanario',hp:999,invulnerable:true,damage:12,patrol:[{x:10.5,y:7.5},{x:7.5,y:7.5},{x:7.5,y:3.5},{x:2.5,y:3.5}]};
+// Final resonators are placed on three traversable sides of the chamber.
+maps.final.objects.push(
+ {id:'final_node_a',name:'Resonador del puerto',type:'resonator',x:3.5,y:1.5},
+ {id:'final_node_b',name:'Resonador del campanario',type:'resonator',x:7.5,y:7.5},
+ {id:'final_node_c',name:'Resonador del arrecife',type:'resonator',x:12.5,y:1.5}
+);
 Object.assign(clues,{
+frequency:['Partitura de Thomas','Los tres pulsos tienen una función: 110 Hz abre la toma; 330 Hz la envía al siguiente aparato; 220 Hz cierra el registro. Ada anotó la operación en el libro de mareas.'],
+mother_letter:['Carta de Ada','Quería recordar cómo sonaba la campana antes de mirarnos en el retrato. Después guardaba el cilindro, para no volver a oírlo aquella noche. Esas tres cosas abren la caja; nunca las toqué en otro orden.'],
 letter:['Carta de Thomas','Elias: no vengas a buscarme. Si alguien entrega esta carta, es que no he podido salir. No sigas mi voz desde el agua. Recuerda lo que te prometí cuando caíste del embarcadero: nunca te dejaría solo.'],
 silas:['Testimonio de Silas','Silas llevó a Thomas al Gilman y entregó su sobre sin abrir. Thomas había pagado una habitación para Elias el 28 de septiembre. El farero reconoce su propia letra en el recibo.'],
 register:['Registro del hotel','28 de septiembre de 1927. Habitación 13, a nombre de Elias Ward; pagada por Thomas Ward. El espacio de la firma del huésped está vacío. Una reserva no demuestra que Elias estuviera aquí.'],
@@ -170,7 +179,7 @@ photo:['Fotografía imposible','Un hombre con tu abrigo está sentado en la habi
 night_note:['Nota de Agnes','Yo entregué tu sobre a Silas. Thomas pagó para que tuvieras una habitación, no para que vinieras. No respondas a los golpes. El armario del corredor oculta la luz; primero rompe la línea de visión.'],
 eleanor:['Testimonio de Eleanor','Eleanor trató a los desaparecidos como enfermos y les enseñó a repetir la señal para tranquilizarlos. Después comenzaron a contestar con recuerdos de otros. Su clínica fue clausurada cuando quiso detener las sesiones.'],
 harker:['Declaración de Harker','Harker conserva la voz de su hija muerta. Afirma que recordar es seguir vivo, pero evita decir quién paga el precio de mantener abierto el enlace.'],
-archive_log:['Registro de mareas','Cada sesión registra lo que se dice junto a un resonador. La segunda marea es a las 00:04. El campanario exige grave, agudo, medio: primero abre el registro, después envíalo y por último cierra la toma.'],
+archive_log:['Registro de mareas','Cada sesión registra lo que se dice junto a un resonador. La segunda marea es a las 00:04. Antes de oír la señal se abre la toma; se transmite al siguiente aparato y por último se cierra el registro. Compara estas tres operaciones con la partitura.'],
 ward_ledger:['Cuaderno de experimentos','1898. Ada grabó a Elias de niño. El resonador puede adquirir recuerdos durante una sesión; una copia desconectada solo repite el registro recibido. Ada interrumpió la prueba cuando la voz del niño continuó sin él.'],
 ward_record:['Grabación de 1898','Ada: «Elias, cuenta hasta tres». El niño obedece. Una segunda voz vuelve a empezar. Al fondo alguien cierra una puerta y Ada deja de contar para llamar a su hijo. La segunda voz no se detiene.'],
 ward_portrait:['Retrato familiar','1898: Ada Ward y Elias, todavía niño, junto al primer resonador. Thomas aún no había nacido. La campana del retrato lleva la misma grieta que el aparato del hotel.'],
