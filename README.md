@@ -1,6 +1,6 @@
 # INNSMOUTH-404 — La herencia de las profundidades
 
-**v1.0.0-rc.7.1 · Pixel Art Gótico Costero** — candidata a publicación, no versión estable certificada.
+**v1.0.0-rc.8 · Pixel Art Gótico Costero** — candidata a publicación, no versión estable certificada.
 
 Survival horror narrativo en primera persona inspirado en los Mitos de Cthulhu, ambientado en Innsmouth en 1927. Proyecto independiente de ASHEN-VEIL-404.
 
@@ -32,6 +32,10 @@ python3 tools/build_singlefile.py
 git diff --exit-code -- JUGAR-SIN-INSTALAR.html
 ```
 
-Los 21 módulos de ejecución, la hoja de estilos y los dos HTML corresponden exactamente a los archivos de la RC.7.1. Los recursos utilizados por el motor están incorporados en los módulos de arte y el CSS. El ZIP original de desarrollo conserva además los atlas originales, recursos PNG de edición, documentación histórica y las demás pruebas e informes. Esta primera importación incluye las tres pruebas originales de núcleo, campaña y accesibilidad.
+La RC.8 incorpora revisión narrativa, deducciones con selección de pruebas, consecuencias más claras y tres perfiles de dificultad con diferencias de detección, movimiento y recuperación. El guardado v8 migra partidas anteriores sin borrar progreso. Las decisiones ya tomadas conservan su resultado.
+
+Consulta [la auditoría narrativa y jugable](docs/NARRATIVA-Y-QA-RC8.md) para la historia por capítulos, decisiones, tabla de dificultad y límites de las pruebas (**contiene spoilers**), y [CHANGELOG](CHANGELOG.md) para los cambios.
+
+Quality ejecuta comprobaciones del núcleo, objetos, rutas lógicas, IA y diez recorridos mediante el controlador real con un DOM mínimo. Estos últimos navegan por rutas e invocan interacciones y transiciones de la interfaz; no ejecutan gráficos, audio ni amenazas durante la campaña. El HTML autónomo se regenera desde las fuentes y se comprueba que no haya diferencias.
 
 Pendientes: partida humana completa, persistencia real en navegadores físicos, mando, móvil, rendimiento, mezcla de audio y validación WebGL. No se declara libre de bugs ni se certifica una puntuación artística.

@@ -21,7 +21,7 @@ const byId=new Map(events.map(e=>[e.id,e]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function valid(s){return s.omens===undefined||Array.isArray(s.omens)&&s.omens.length<=events.length&&new Set(s.omens).size===s.omens.length&&s.omens.every(id=>byId.has(id)&&byId.get(id).chapter<=s.chapter);}
 function create(){return {cool:0,active:null,ttl:0,calm:0};}
-function tick(r,s,w,dt,blocked=false){if(s.finished||s.health<=0)return null;dt=clamp(dt,0,.1);r.cool=Math.max(0,r.cool-dt);r.ttl=Math.max(0,r.ttl-dt);if(!r.ttl)r.active=null;if(blocked||s.hidden){r.calm=0;return null;}r.calm+=dt;if(r.calm>=12&&s.stability<100)s.stability=clamp(s.stability+dt*.48,0,100);if(r.cool>0)return null;
+function tick(r,s,w,dt,blocked=false,recovery=.48){if(s.finished||s.health<=0)return null;dt=clamp(dt,0,.1);r.cool=Math.max(0,r.cool-dt);r.ttl=Math.max(0,r.ttl-dt);if(!r.ttl)r.active=null;if(blocked||s.hidden){r.calm=0;return null;}r.calm+=dt;if(r.calm>=12&&s.stability<100)s.stability=clamp(s.stability+dt*recovery,0,100);if(r.cool>0)return null;
 for(const e of events){if(e.map!==s.map||e.chapter!==s.chapter||s.omens?.includes(e.id))continue;const dx=e.x-s.x,dy=e.y-s.y,d=Math.hypot(dx,dy);if(d>1.25||d>.05&&w.castRay(s.x,s.y,dx/d,dy/d,Math.max(0,d-.04)).hit)continue;
 if(e.look){const ax=e.ax-s.x,ay=e.ay-s.y,ad=Math.hypot(ax,ay);if(ad<.9||ad>6||Math.abs(Math.atan2(Math.sin(Math.atan2(ay,ax)-s.ang),Math.cos(Math.atan2(ay,ax)-s.ang)))>.65||w.castRay(s.x,s.y,ax/ad,ay/ad,Math.max(0,ad-.05)).hit)continue;}
 (s.omens??=[]).push(e.id);s.stability=Math.max(10,s.stability-e.cost);r.cool=18;r.calm=0;r.active=e;r.ttl=4.5;return e;}return null;}

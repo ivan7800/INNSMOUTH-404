@@ -10,6 +10,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: for f in src/*.js; do node --check "$f"; done
+      - run: for f in src/*.js; do node --check "$f" || exit; done
       - run: for f in tests/*.cjs; do node "$f" || exit; done
       - run: python3 tools/build_singlefile.py && git diff --exit-code -- JUGAR-SIN-INSTALAR.html

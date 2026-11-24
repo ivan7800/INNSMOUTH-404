@@ -1,0 +1,47 @@
+/* Integration harness: executes the shipping game controller with a minimal DOM.
+ * Rendering/audio/gamepad hardware are deliberately outside this test. Navigation
+ * follows engine paths; interactions, dialogue completion, puzzles and chapter
+ * buttons execute the real controller. No campaign flags are assigned by test. */
+const fs=require('node:fs'),vm=require('node:vm'),A=require('node:assert/strict');
+const C=require('../src/content'),Q=require('../src/campaign'),E=require('../src/engine');
+let checks=0;function ck(v,m){A.ok(v,m);checks++}
+function boot(saved){
+ const ids=new Map(),storage=new Map(saved?[[Q.KEY,JSON.stringify(saved)]]:[]);
+ class El{constructor(tag='div'){this.parentElement={};this.tagName=tag.toUpperCase();this.children=[];this.dataset={};this.style={};this.hidden=false;this.textContent='';this.disabled=false;this.isConnected=true;this.value='';this.classList={add(){},remove(){}};}
+ append(...children){for(const c of children){c.parent=this;this.children.push(c);}} replaceChildren(...c){this.children=[];this.append(...c)} setAttribute(k,v){this[k]=v} addEventListener(k,fn){(this.events??={})[k]=fn} focus(){doc.activeElement=this} remove(){if(this.parent)this.parent.children=this.parent.children.filter(c=>c!==this)} getContext(){return {drawImage(){},clearRect(){}}} click(){if(!this.disabled)(this.onclick||this.events?.click||(()=>{}))()} querySelectorAll(sel){const all=this.children.flatMap(c=>[c,...c.querySelectorAll(sel)]);if(sel.includes('input'))return all.filter(c=>c.tagName==='INPUT'&&(!sel.includes(':checked')||c.checked)&&(!sel.includes('data-evidence')||c.dataset.evidence));return all.filter(c=>c.tagName==='BUTTON'&&!c.disabled)} }
+ const doc={activeElement:null,hidden:false,getElementById(id){if(!ids.has(id))ids.set(id,new El());return ids.get(id)},createElement(t){return new El(t)},createTextNode(t){const e=new El();e.textContent=t;return e},querySelectorAll(){return []},addEventListener(){}};
+ const context={console,document:doc,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},matchMedia:()=>({matches:false}),performance:{now:()=>0},navigator:{},requestAnimationFrame(){},setTimeout(){},clearTimeout(){},confirm:()=>true,HTMLInputElement:El,HTMLTextAreaElement:El,HTMLSelectElement:El,HTMLButtonElement:El,InnContent:C,InnCampaign:Q,VeilEngine:E,InnAI:require('../src/ai'),InnHorror:require('../src/horror'),InnSecrets:require('../src/secrets'),InnCompanion:require('../src/companion'),InnScore:require('../src/score'),InnWebGL:{hybrid:()=>({draw(){}})},InnPixel:{sprite:()=>({})}};
+ context.window=context;context.addEventListener=()=>{};vm.createContext(context);
+ let source=fs.readFileSync('src/game.js','utf8'),at=source.lastIndexOf('})();');
+ source=source.slice(0,at)+"globalThis.probe={journal,state:()=>s,world:()=>world,interact,move:(x,y,ang)=>{world.move(s,x-s.x,y-s.y);s.ang=ang;},overlay:()=>overlay};"+source.slice(at);
+ vm.runInContext(source,context);const api=context.probe;
+ function button(label){const b=[...doc.getElementById('modal-buttons').children].find(b=>b.textContent===label&&!b.disabled);ck(b,'button '+label+' / '+doc.getElementById('modal-title').textContent);b.click();}
+ function close(){if(api.overlay())button('Cerrar')}
+ function use(id){ck(!api.overlay(),'closed before '+id);const s=api.state(),o=C.maps[s.map].objects.find(o=>o.id===id);ck(o,'object '+id+' on '+s.map);const w=api.world();let found;
+ for(let y=Math.floor(o.y)-2;y<=Math.floor(o.y)+2&&!found;y++)for(let x=Math.floor(o.x)-2;x<=Math.floor(o.x)+2;x++){const a=x+.5,b=y+.5,d=Math.hypot(o.x-a,o.y-b);if(d<.03||d>1.8||!w.canMove(a,b)||w.castRay(a,b,(o.x-a)/d,(o.y-b)/d,d-.05).hit)continue;const path=w.path(s.x,s.y,a,b);if(path.length||Math.hypot(s.x-a,s.y-b)<.01){found={a,b,path};break}}
+ ck(found,'reachable '+id);for(const n of found.path){const d=Math.hypot(n.x-s.x,n.y-s.y),steps=Math.ceil(d/.1);for(let i=0;i<steps;i++)api.move(s.x+(n.x-s.x)/(steps-i),s.y+(n.y-s.y)/(steps-i),s.ang);}
+ api.move(s.x,s.y,Math.atan2(o.y-s.y,o.x-s.x));api.interact();
+ let guard=0;while(api.overlay()==='dialogue'&&guard++<12){const bs=doc.getElementById('modal-buttons').children;bs[0].click()}
+ ck(Q.validate(s,C,E),'valid after '+id);if(api.overlay()==='read')close();}
+ function evidence(){for(const box of doc.getElementById('modal-content').querySelectorAll('input[data-evidence]:checked'))box.checked=false;for(const box of doc.getElementById('modal-content').querySelectorAll('input'))box.checked=true;}
+ return {api,doc,storage,button,close,use,evidence,start(){if(saved){doc.getElementById('continue').onclick()}else{doc.getElementById('new').onclick();close()}},next(n){button('Comenzar capítulo '+['','I','II','III','IV','V','VI','VII','VIII'][n]);close();ck(api.state().chapter===n,'chapter '+n);ck(Q.validate(api.state(),C,E),'valid chapter start');const reload=boot(JSON.parse(storage.get(Q.KEY)));reload.start();ck(reload.api.state().chapter===n,'continue chapter '+n)}};
+}
+for(const ward of ['share','conceal'])for(const thomas of ['escort','shelter'])for(const route of ['sever','isolate','listen']){
+ if(ward==='conceal'&&route==='isolate')continue;
+ const h=boot(),{api,use,button,close,evidence,next}=h;h.start();
+ use('silas');use('hotel');use('clerk');use('register');
+ h.api.journal();for(const b of h.doc.getElementById('modal-content').querySelectorAll('input'))b.checked=['letter','silas','register'].includes(b.value);button('Relacionar pistas');close();
+ use('room');use('photo');use('back');next(2);use('night_note');use('night_register');use('service_key');use('service_door');use('service_plan');use('escape');next(3);
+ use('eleanor');use('church_entry');use('harker');use('archive_door');use('archive_log');use('frequency');use('archive_map');use('archive_back');use('resonator');button('Grave · 110 Hz');button('Agudo · 330 Hz');button('Medio · 220 Hz');button('Activar');close();use('crypt_gate');next(4);
+ use('dock_clara');use('cargo_log');use('cannery_door');use('pump_note');use('pump_valve');use('thomas_trace');use('tide_door');use('deep_witness');use('tide_photo');use('tide_exit');next(5);
+ use('manor_clara');use('ward_portrait');use('mother_letter');use('study_door');use('ward_ledger');use('ward_record');use('memory_lock');
+ button('Campana');button('Retrato');button('Cilindro');button('Abrir');close();use('memory_door');use('ward_other');use('memory_truth');use('ward_choice');
+ button('Es un muerto que ha regresado');ck(api.overlay()==='investigation','wrong deduction blocked');evidence();button('Repite un registro; no incorpora el presente');button(ward==='share'?'Entregar copia a Eleanor':'Conservar los registros');close();use('manor_exit');next(6);
+ use('drain_log');use('under_mark');use('pump_entry');use('pressure_diagram');use('pressure_manual');use('pressure_console');button('Cerrar entrada');button('Abrir purga');button('Abrir salida');button('Confirmar presión');close();use('isolation_door');use('isolation_log');use('thomas_real');use('thomas_copy');use('identity_test');
+ evidence();button('Creer al hombre que vio caer la lámpara');button(thomas==='escort'?'Pedir a Thomas que me acompañe':'Dejar a Thomas en la cámara seca');close();use('under_exit');next(7);
+ use('network_log');use('network_ada');use('network_eleanor');use('conduit_door');use('conduit_note');use('conduit_cutoff');use('ritual_door');use('ritual_harker');use('ritual_chart');use('network_console');button('Puerto');button('Campanario');button('Arrecife');button('Sincronizar');evidence();button('Nuevos recuerdos de testigos vivos');button(({sever:'Cortar el enlace',isolate:'Aislar la red con Eleanor',listen:'Escuchar la transmisión'})[route]);close();use('ritual_exit');next(8);
+ use('reef_signal');use('reef_silas');use('reef_chart');use('city_door');use('city_inscription');use('city_other');use('city_anchor');button('Voz');button('Piedra');button('Luz');button('Estabilizar');close();use('final_door');use('final_harker');use('final_thomas');use('final_console');button('Ejecutar decisión');close();use('final_exit');
+ const old={...JSON.parse(h.storage.get(Q.KEY)),version:7};delete old.inferences;ck(Q.validate(Q.migrate(old),C,E),'legacy v7 migration');ck(!Q.validate({...api.state(),inferences:[]},C,E),'missing deductions rejected');ck(api.state().endingId===({sever:'dawn',isolate:'silence',listen:'inheritance'})[route],'ending');
+ const restored=boot(JSON.parse(h.storage.get(Q.KEY)));restored.start();ck(restored.api.overlay()==='ending','continue completed save');
+}
+console.log(`${checks} comprobaciones del controlador real: 10 campañas, navegación por rutas, diálogos, deducciones, puzles, decisiones, transiciones y continuar final guardado. Sin simular amenazas ni renderizado.`);
